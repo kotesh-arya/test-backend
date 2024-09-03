@@ -16,7 +16,7 @@ const port = process.env.PORT;
       throw error;
     });
 
-    app.listen(port, () => {
+    app.listen(port || 8000, () => {
       console.log(`Example app listening on port ${port}`);
     });
   } catch (error) {
