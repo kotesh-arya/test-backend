@@ -1,37 +1,18 @@
 import dotenv from "dotenv";
-import mongoose from "mongoose";
+import connectDB from "./db/index.js";
+import { app } from "./app.js";
 dotenv.config();
-import express from "express";
-const app = express();
-import { DB_NAME } from "./constants.js";
-const port = process.env.PORT;
 
-// function connectDB() {}
-(async () => {
-  try {
-    mongoose.connect(`${process.env.MONGODB_URI}/${DB_NAME}`);
-    console.log(`MongoDB connected!! with HOST ${process.env.MONGODB_URI}`);
+connectDB()
+  .then(() => {
     app.on("error", (error) => {
-      console.log("Application not able to talk to the DB", error);
+      console.log("Error while spinnig up the Server:", error);
       throw error;
     });
-
-    app.listen(port || 8000, () => {
-      console.log(`Example app listening on port ${port}`);
+    app.listen(process.env.PORT || 8000, () => {
+      console.log(`Server is running at port: ${process.env.PORT}`);
     });
-  } catch (error) {
-    console.error("Error in connecting to the DB:", error);
-  }
-})();
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
-app.get("/twitter", (req, res) => {
-  res.send("here we go with the twitter handle");
-});
-app.get("/intro", (req, res) => {
-  res.send("INRTOOO");
-});
-app.get("/login", (req, res) => {
-  res.send(`<h1>Please login</h1>`);
-});
+  })
+  .catch((error) => {
+    console.log(`MongoDB connection failed!!`, error);
+  });
